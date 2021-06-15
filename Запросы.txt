@@ -1,0 +1,20 @@
+1.¬ыбрать им€ преподавател€, названи€ предметов, которые он может читать
+SELECT teachers.firstname, teachers.lastname, subjects.name FROM teachers LEFT JOIN teachers_subjects ON teachers_subjects.teacher_id = teachers.id LEFT JOIN subjects ON teachers_subjects.subject_id = subjects.id
+
+2.¬ыбрать им€, email студента, названи€ групп, в которых он учитс€.
+SELECT students.firstname, students.lastname, students.email, classes.name FROM students LEFT JOIN students_in_classes ON students.id = students_in_classes.student_id LEFT JOIN classes ON students_in_classes.class_id = classes.id
+
+3.email студента, который в данный момент проходит обучение
+SELECT students.email FROM students LEFT JOIN students_in_classes ON students.id = students_in_classes.student_id LEFT JOIN classes ON students_in_classes.class_id = classes.id WHERE classes.issue_date IS NULL
+
+4.Ќазвани€ групп, которые выпустились
+SELECT name FROM classes WHERE issue_date IS NOT NULL
+
+5.им€ преподавател€, который в данный момент не ведЄт ни в одной группе.
+SELECT teachers.firstname, teachers.lastname FROM teachers LEFT JOIN classes ON teachers.id = classes.teacher_id WHERE classes.id IS NULL OR classes.issue_date IS NOT NULL GROUP BY teachers.firstname
+
+6. оличество групп, которые выпустились и общее количество студентов из них.
+SELECT COUNT(students_in_classes.class_id), COUNT(students_in_classes.student_id), classes.issue_date from students_in_classes INNER JOIN classes ON students_in_classes.class_id = classes.id GROUP BY students_in_classes.class_id HAVING classes.issue_date IS NOT NULL
+
+7.»м€ преподавател€ и количество предметов, которые он может читать.
+SELECT teachers.id, teachers.firstname, teachers.lastname, COUNT(teachers_subjects.subject_id) FROM teachers LEFT JOIN teachers_subjects ON teachers_subjects.teacher_id = teachers.id GROUP BY teachers.id
